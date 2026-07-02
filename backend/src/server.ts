@@ -34,6 +34,6 @@ app.get("/about", (req: Request, res: Response) => {
 console.log("Current Directory:", process.cwd());
 console.log("Upload Path:", path.join(process.cwd(), "uploads", "mahasiswa"));
 
-app.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
+app.listen(3001, () => {
+  console.log("Server running on port 3001");
 });

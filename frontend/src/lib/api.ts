@@ -1,3 +1,5 @@
+import { getToken } from "./auth";
+
 export const API_URL = "http://localhost:3001/api";
 
 console.log("API_URL =", API_URL);
@@ -29,18 +31,25 @@ type ApiResponse<T> = {
   data?: T;
 };
 
-export async function getProdi(): Promise<Prodi[]> {
-  const response = await fetch(`${API_URL}/prodi`, {
-    cache: "no-store",
-  });
+// ===============================
+// Helper fetch dengan JWT
+// ===============================
+async function authFetch(
+  url: string,
+  options: RequestInit = {}
+): Promise<Response> {
+  const token = getToken();
 
-  const result = await response.json();
+  const headers = new Headers(options.headers);
 
-  if (!response.ok) {
-    throw new Error(result.message);
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
-  return result.data;
+  return fetch(url, {
+    ...options,
+    headers,
+  });
 }
 
 async function handleResponse<T>(
@@ -57,6 +66,26 @@ async function handleResponse<T>(
   return result;
 }
 
+// ===============================
+// PRODI
+// ===============================
+export async function getProdi(): Promise<Prodi[]> {
+  const response = await authFetch(`${API_URL}/prodi`, {
+    cache: "no-store",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+
+  return result.data;
+}
+
+// ===============================
+// MAHASISWA
+// ===============================
 export async function getMahasiswa(params: {
   search?: string;
   prodi_id?: string;
@@ -81,7 +110,7 @@ export async function getMahasiswa(params: {
     query.set("limit", String(params.limit));
   }
 
-  const response = await fetch(
+  const response = await authFetch(
     `${API_URL}/mahasiswa?${query.toString()}`,
     {
       cache: "no-store",
@@ -100,7 +129,7 @@ export async function getMahasiswa(params: {
 export async function createMahasiswa(
   formData: FormData
 ) {
-  const response = await fetch(`${API_URL}/mahasiswa`, {
+  const response = await authFetch(`${API_URL}/mahasiswa`, {
     method: "POST",
     body: formData,
   });
@@ -118,7 +147,7 @@ export async function updateMahasiswa(
   id: number,
   formData: FormData
 ) {
-  const response = await fetch(
+  const response = await authFetch(
     `${API_URL}/mahasiswa/${id}`,
     {
       method: "PUT",
@@ -138,9 +167,12 @@ export async function updateMahasiswa(
 export async function deleteMahasiswa(
   id: number
 ): Promise<void> {
-  const response = await fetch(`${API_URL}/mahasiswa/${id}`, {
-    method: "DELETE",
-  });
+  const response = await authFetch(
+    `${API_URL}/mahasiswa/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   await handleResponse(response);
 }
