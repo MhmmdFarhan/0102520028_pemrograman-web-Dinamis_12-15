@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { logout } from "../../lib/auth";
 import MahasiswaForm from "../../components/MahasiswaForm";
 import MahasiswaTable from "../../components/MahasiswaTable";
 import {
@@ -157,11 +158,20 @@ export default function MahasiswaPage() {
           </p>
         </div>
 
-        <Link href="/">
-          <button className="btn-secondary">
-            Kembali
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Link href="/">
+            <button className="btn-secondary">
+              Kembali
+            </button>
+          </Link>
+
+          <button
+            className="btn-secondary"
+            onClick={logout}
+          >
+            Logout
           </button>
-        </Link>
+        </div>
       </div>
 
       {message && (
