@@ -3,7 +3,11 @@ import cors from "cors";
 import app from "./app";
 import path from "path";
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Server berjalan di port ${PORT}`);
+});
 
 // Endpoint 1
 app.get("/health", (req: Request, res: Response) => {

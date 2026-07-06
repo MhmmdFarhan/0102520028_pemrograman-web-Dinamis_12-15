@@ -34,7 +34,7 @@ type ApiResponse<T> = {
 // ===============================
 // Helper fetch dengan JWT
 // ===============================
-async function authFetch(
+export async function authFetch(
   url: string,
   options: RequestInit = {}
 ): Promise<Response> {
