@@ -55,6 +55,8 @@ export const createMahasiswa = async (
       },
     });
   } catch (error) {
+    console.error("Update Mahasiswa Error:", error);
+
     res.status(500).json({ 
         message: "Terjadi kesalahan server", 
     });

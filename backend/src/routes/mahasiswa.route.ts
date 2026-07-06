@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import { allowRoles } from "../middlewares/role.middleware";
 
 import {
   createMahasiswa,
@@ -14,7 +15,12 @@ import { uploadFotoMahasiswa } from "../middlewares/upload.middleware";
 const router = Router();
 
 // READ + SEARCH + FILTER + PAGINATION
-router.get("/", authMiddleware, getAllMahasiswa);
+router.get(
+  "/",
+  authMiddleware,
+  allowRoles("admin", "operator", "viewer"),
+  getAllMahasiswa
+);
 
 // DETAIL
 router.get("/:id", authMiddleware, getMahasiswaById);
@@ -23,6 +29,7 @@ router.get("/:id", authMiddleware, getMahasiswaById);
 router.post(
   "/",
   authMiddleware,
+  allowRoles("admin", "operator"),
   uploadFotoMahasiswa.single("foto"),
   createMahasiswa
 );
@@ -31,11 +38,17 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
+  allowRoles("admin", "operator"),
   uploadFotoMahasiswa.single("foto"),
   updateMahasiswa
 );
 
 // DELETE
-router.delete("/:id", authMiddleware, deleteMahasiswa);
+router.delete(
+  "/:id",
+  authMiddleware,
+  allowRoles("admin"),
+  deleteMahasiswa
+);
 
 export default router;

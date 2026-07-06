@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { logout } from "../../lib/auth";
+import { getUser, logout } from "../../lib/auth";
 import MahasiswaForm from "../../components/MahasiswaForm";
 import MahasiswaTable from "../../components/MahasiswaTable";
 import {
@@ -16,6 +16,12 @@ import {
 } from "../../lib/api";
 
 export default function MahasiswaPage() {
+  const user = getUser();
+  const role = user?.role;
+
+  const canCreate =
+    role === "admin" || role === "operator";
+
   const [mahasiswa, setMahasiswa] = useState<Mahasiswa[]>([]);
   const [prodi, setProdi] = useState<Prodi[]>([]);
   const [selectedMahasiswa, setSelectedMahasiswa] =
@@ -186,13 +192,15 @@ export default function MahasiswaPage() {
         </div>
       )}
 
-      <MahasiswaForm
-        selectedMahasiswa={selectedMahasiswa}
-        onSubmit={handleSubmit}
-        onCancelEdit={() =>
-          setSelectedMahasiswa(null)
-        }
-      />
+            {canCreate && (
+        <MahasiswaForm
+          selectedMahasiswa={selectedMahasiswa}
+          onSubmit={handleSubmit}
+          onCancelEdit={() =>
+            setSelectedMahasiswa(null)
+          }
+        />
+      )}
 
       <section
         className="card"

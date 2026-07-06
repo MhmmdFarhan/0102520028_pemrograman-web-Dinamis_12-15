@@ -1,6 +1,7 @@
 "use client";
 
 import { Mahasiswa } from "@/lib/api";
+import { getUser } from "@/lib/auth";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -16,6 +17,15 @@ export default function MahasiswaTable({
   onEdit,
   onDelete,
 }: Props) {
+
+  const user = getUser();
+  const role = user?.role;
+
+  const canEdit =
+    role === "admin" || role === "operator";
+
+  const canDelete =
+    role === "admin";
   if (mahasiswa.length === 0) {
     return <p>Belum ada data mahasiswa.</p>;
   }
@@ -59,18 +69,22 @@ export default function MahasiswaTable({
             <td>{item.angkatan}</td>
 
             <td>
-              <button
-                onClick={() => onEdit(item)}
-              >
-                Edit
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => onEdit(item)}
+                >
+                  Edit
+                </button>
+              )}
 
-              <button
-                onClick={() => onDelete(item.id)}
-                style={{ marginLeft: 8 }}
-              >
-                Hapus
-              </button>
+              {canDelete && (
+                <button
+                  onClick={() => onDelete(item.id)}
+                  style={{ marginLeft: 8 }}
+                >
+                  Hapus
+                </button>
+              )}
             </td>
           </tr>
         ))}
