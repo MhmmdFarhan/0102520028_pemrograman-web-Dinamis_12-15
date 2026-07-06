@@ -39,7 +39,10 @@ export default function MahasiswaTable({
           <th>Nama</th>
           <th>Prodi</th>
           <th>Angkatan</th>
-          <th>Aksi</th>
+
+          {role !== "viewer" && (
+            <th>Aksi</th>
+          )}
         </tr>
       </thead>
 
@@ -68,24 +71,26 @@ export default function MahasiswaTable({
             <td>{item.nama_prodi}</td>
             <td>{item.angkatan}</td>
 
-            <td>
-              {canEdit && (
-                <button
-                  onClick={() => onEdit(item)}
-                >
-                  Edit
-                </button>
-              )}
+            {role !== "viewer" && (
+              <td>
+                {canEdit && (
+                  <button
+                    onClick={() => onEdit(item)}
+                  >
+                    Edit
+                  </button>
+                )}
 
-              {canDelete && (
-                <button
-                  onClick={() => onDelete(item.id)}
-                  style={{ marginLeft: 8 }}
-                >
-                  Hapus
-                </button>
-              )}
-            </td>
+                {canDelete && (
+                  <button
+                    onClick={() => onDelete(item.id)}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Hapus
+                  </button>
+                )}
+              </td>
+            )}
           </tr>
         ))}
       </tbody>
